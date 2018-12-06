@@ -1,13 +1,14 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 # Blood ART to PNG converter
 # https://github.com/patwork/blood-art-to-png
 #
 
-import sys
 import os
 import struct
+import sys
+
 import png
 
 # ----------------------------------------------------------------------------
@@ -78,9 +79,9 @@ palette = [
     112, 156, 192, 120, 164, 200, 160, 200, 228, 160, 0, 188
 ]
 
+
 # ----------------------------------------------------------------------------
 def fatalError(e):
-
     if isinstance(e, str):
         sys.stderr.write(e)
         sys.exit(2)
@@ -93,15 +94,18 @@ def fatalError(e):
         sys.stderr.write('Error: {}\n'.format(sys.exc_info()[0]))
         sys.exit(4)
 
+
 # ----------------------------------------------------------------------------
 def initInfo():
     return {}
+
 
 # ----------------------------------------------------------------------------
 def addInfo(info, section, key, val):
     if not section in info:
         info[section] = {}
     info[section][key] = val
+
 
 # ----------------------------------------------------------------------------
 def writeInfo(filename, info):
@@ -113,9 +117,9 @@ def writeInfo(filename, info):
                 f.write('{}={}\n'.format(key[2:], info[section][key]))
             f.write('\n')
 
+
 # ----------------------------------------------------------------------------
 def extractPNG(raw_8bpp, xsize, ysize, extended, index, info):
-
     name = 'tile{:06d}.png'.format(index)
     args = struct.unpack('BbbB', struct.pack('<L', extended))
     raw_32bpp = []
@@ -152,9 +156,9 @@ def extractPNG(raw_8bpp, xsize, ysize, extended, index, info):
     addInfo(info, name, '6.ext1', args[0])
     addInfo(info, name, '7.ext2', args[3])
 
+
 # ----------------------------------------------------------------------------
 def unpackART(raw, info):
-
     art_header = struct.unpack_from('<LLLL', raw)
     art_version = art_header[0]
     art_start = art_header[2]
@@ -183,9 +187,9 @@ def unpackART(raw, info):
         art_offset = art_offset + size
         extractPNG(raw_8bpp, tiles_xsizes[i], tiles_ysizes[i], tiles_extended[i], art_start + i, info)
 
+
 # ----------------------------------------------------------------------------
 def processFile(filename):
-
     info = initInfo()
 
     try:
@@ -200,6 +204,7 @@ def processFile(filename):
         fatalError(None)
 
     writeInfo(filename, info)
+
 
 # ----------------------------------------------------------------------------
 if __name__ == '__main__':
